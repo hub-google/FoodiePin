@@ -1,0 +1,139 @@
+系統需求規格書 (System Requirements Specification)
+
+專案名稱：FoodiePin (跨平台美食社群收集器)
+
+1. 專案概述
+
+本專案旨在開發一款名為「FoodiePin」的輕量級跨平台應用。解決使用者在社群媒體（IG、Threads、YouTube 等）看到美食資訊後，難以快速、精準地統整並儲存到 Google Maps 的痛點。
+系統將採用**「雙模式（Dual-Mode）」**運作，兼具「零成本」與「高黏著度」：
+
+免登入模式 (Guest Mode)：隨開即用，資料存於本地端，保障隱私與絲滑體驗。
+
+註冊同步模式 (Sync Mode)：提供帳密註冊，資料同步至雲端，實現跨裝置無縫切換。
+同時支援「前端本地清單分享」以促進病毒式傳播，並在後端進行「匿名資料搜集」以利未來做美食趨勢統計分析。
+
+2. 技術架構與選型 (零成本雙軌黃金組合)
+
+核心開發框架：Antigravity (負責專案生成與 GAS 自動部署)。
+
+前端呈現：基於 HTML/JS/CSS 渲染的 PWA (託管於 GitHub Pages)。內建雙軌邏輯（localStorage 離線快取 + API 雲端同步）。
+
+後端服務：Google Apps Script (GAS) (負責接收跨域請求、AI 解析與雲端資料庫讀寫)。
+
+AI 語意解析：Google Gemini 1.5 Flash API (負責萃取店名、分類與標準化地址)。
+
+零成本資料庫：Google Sheets (共三個 Worksheets：Trend_Log 匿名趨勢、Users 帳密管理、User_Bookmarks 跨裝置書籤)。
+
+地圖串接：Google Maps Universal Search URL (免 API Key)。
+
+3. 核心功能需求 (Functional Requirements)
+
+F-01 跨平台分享接收：實作 Web Share Target，接收社群平台的 URL 或純文字。
+
+F-02 AI 資訊萃取與結構化：透過 Gemini API 精準提取店名、縣市區域與餐廳類型。
+
+F-03 地圖捷徑生成與跳轉：自動拼接合法的 Google Maps 搜尋網址。
+
+F-04 匿名趨勢紀錄：GAS 後端自動將結構化資料記錄至 Trend_Log。
+
+F-05 雙軌清單儲存 (Dual-Storage)：
+
+未登入：僅儲存於設備端 localStorage。
+
+已登入：儲存於 localStorage 並同步上傳至後端 User_Bookmarks。
+
+F-06 一鍵社交分享 (Social Sharing)：前端提供分享功能，將清單格式化為易讀純文字並呼叫 navigator.share。
+
+F-07 帳號系統 (Auth System)：(新增) 提供信箱與密碼註冊/登入介面。後端需實作基本的密碼雜湊 (Hash) 驗證與 Token 核發。
+
+F-08 跨裝置同步 (Cloud Sync)：(新增) 使用者在新裝置登入後，前端需自動向 GAS 發送請求，拉取該帳號在 User_Bookmarks 的所有歷史紀錄，並覆寫本地 localStorage。
+
+4. 使用者案例 (Use Cases)
+
+案例一：免登入者的極速體驗 (Guest Mode)
+
+操作流程：小明第一次使用，未註冊。從 IG 分享貼文至 FoodiePin。系統解析後跳出地圖連結。
+
+幕後結果：前端 localStorage 新增一筆紀錄。後端僅寫入無個資的匿名趨勢紀錄。體驗絲滑零阻力。
+
+案例二：註冊使用者的跨裝置無縫切換 (Sync Mode)
+
+角色：換新手機的重度使用者 (Alice)
+
+情境：Alice 買了新 iPhone，她原本在舊手機的 FoodiePin 存了 50 家餐廳。
+
+操作流程：
+
+Alice 在新手機瀏覽器打開 FoodiePin 網頁並加入主畫面。
+
+點擊「登入」，輸入原本註冊的 Email 與密碼。
+
+畫面顯示「正在同步您的美食圖鑑...」。
+
+3 秒後，舊手機的 50 家餐廳清單完整出現在新手機的畫面上。
+
+案例三：將累積的美食清單分享給朋友 (社交傳播)
+
+操作流程：小明點擊「我的清單」中的「分享清單給朋友」，系統自動打包清單文字與推廣連結，傳送至 LINE 群組。
+
+5. 非功能性需求 (Non-Functional Requirements)
+
+效能：從分享到回傳連結需在 3-4 秒內完成；登入同步需在 5 秒內完成。
+
+安全性 (重要)：密碼絕不能以明文儲存於 Google Sheets，必須經過 SHA-256 雜湊處理。API 通訊須帶有簡單的 Auth Token 驗證身分。
+
+跨平台相容性：前端 UI 必須響應式設計 (RWD)。
+
+6. 產出物、部署與資料庫架構 (Implementation Details)
+
+6.1 前端網頁：PWA 託管於 GitHub Pages。實作登入介面與 Auth Token 管理。
+
+6.2 後端 API：託管於 Google Apps Script。實作 doPost() 與路由判斷（依傳入的 action 區分解析、註冊、登入、同步等功能）。
+
+6.3 資料庫 (Google Sheets)：需建立三個工作表 (Sheet1~3)。
+
+7. AI 開發與實作細節規範 (For Antigravity Implementation)
+
+為確保 AI 開發代理能精準產出無 Bug 之雙模式架構，請嚴格遵守以下開發規範：
+
+7.1 後端路由設計 (GAS doPost 整合)
+
+前端發送的 JSON 請求需統一帶有 action 欄位。GAS 依 action 執行對應函式：
+
+action: "parse_location" (AI 解析並儲存趨勢/個人書籤)
+
+action: "register" (註冊帳號)
+
+action: "login" (登入並回傳 Token)
+
+action: "sync_bookmarks" (拉取雲端清單)
+
+7.2 Google Sheets 資料庫結構 (Database Schema)
+
+GAS 需操作同一個 Spreadsheet 的三個 Sheets：
+
+Sheet1 (Trend_Log 匿名趨勢)：[A] Timestamp, [B] Name, [C] City, [D] Category, [E] Clue, [F] Source
+
+Sheet2 (Users 帳號管理)：[A] User_ID (UUID), [B] Email, [C] Password_Hash, [D] Created_At
+
+Sheet3 (User_Bookmarks 雲端書籤)：[A] Bookmark_ID, [B] User_ID, [C] Timestamp, [D] Name, [E] City, [F] Category, [G] Maps_URL
+
+7.3 簡易身份驗證實作 (Custom Auth on GAS)
+
+註冊/登入：前端傳送 Email 與 Password。GAS 使用 Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, password) 進行雜湊比對。
+
+Token 發放：登入成功後，GAS 回傳一個簡易的 Auth Token（可將 User_ID 加鹽編碼）供前端存於 localStorage.getItem('foodiepin_token')。
+
+授權檢驗：若使用者於登入狀態下分享美食（前端請求帶有 token），GAS 解析完成後，除了寫入 Trend_Log，需同步寫入 User_Bookmarks。
+
+7.4 雙軌儲存邏輯 (Frontend Logic)
+
+未登入狀態：觸發分享 ➡️ 收到解析結果 ➡️ 直接 push 到 localStorage。
+
+登入狀態：觸發分享 ➡️ API 請求夾帶 token ➡️ 收到解析結果 ➡️ push 到 localStorage（維持前端即時顯示）。(背景：GAS 已自動將該筆紀錄寫入 User_Bookmarks)。
+
+跨裝置同步：登入成功時，前端觸發 sync_bookmarks 請求，GAS 回傳該 User_ID 於 User_Bookmarks 的所有紀錄，前端將其覆寫或合併至 localStorage。
+
+7.5 Gemini API 串接規格
+
+需於 Prompt 中強制要求回傳 JSON 格式：{"name": "...", "city_region": "...", "category": "...", "location_clue": "..."}。

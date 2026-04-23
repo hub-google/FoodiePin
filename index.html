@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodiePin | 跨平台美食社群收集器</title>
+    <link rel="stylesheet" href="style.css?v=202604201236">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">FoodiePin.</div>
+            <div id="header-auth" class="nav-auth-group">
+                <!-- Logged out: <button id="header-btn-login">登入</button> <button id="header-btn-register">註冊</button> -->
+                <!-- Logged in: <span id="header-email">email</span> <button id="header-btn-logout">登出</button> -->
+            </div>
+        </header>
+
+        <!-- Home / Add Section -->
+        <section id="section-home" class="animate-fade">
+            <div class="card glass">
+                <h2>貼上美食資訊</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">
+                    將 IG/Threads 貼文內容或連結貼到這裡，AI 會自動幫你解析店名與地圖。
+                </p>
+                <div style="position: relative;">
+                    <textarea id="input-text" rows="4" placeholder="例如：這家台北的牛肉麵超好吃..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button id="btn-parse" class="btn-primary" style="flex: 2;">立即解析並儲存</button>
+                    <button id="btn-upload" class="btn-ghost" style="flex: 1; font-size: 0.8rem;">📸 上傳截圖</button>
+                </div>
+                <input type="file" id="file-input" style="display: none;" accept="image/*">
+            </div>
+
+            <div id="parse-result" class="card glass" style="display: none;">
+                <h2 id="result-name">餐廳名稱</h2>
+                <p id="result-details" style="font-size: 0.9rem; margin-bottom: 10px;"></p>
+                <div id="save-status" class="save-status" style="display: none; margin-bottom: 15px; font-size: 0.8rem; color: #4ade80; font-weight: 600;">
+                    ✅ 已自動儲存至清單
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a id="result-maps" href="#" target="_blank" class="btn-primary" style="flex: 2; text-align: center; text-decoration: none;">📍 Google Maps</a>
+                    <button id="btn-share-item" class="btn-ghost" style="flex: 1;">分享</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- My List Section -->
+        <section id="section-list" class="animate-fade" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>我的收藏清單</h2>
+                <button id="btn-share-list" class="btn-ghost" style="width: auto; padding: 8px 15px; font-size: 0.8rem;">分享全清單</button>
+            </div>
+            <div id="food-list-container">
+                <!-- List items will be injected here -->
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="section-profile" class="animate-fade" style="display: none;">
+            <div id="auth-unlogged" class="card glass">
+                <h2>加入同步模式</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+                    註冊後可跨裝置同步您的美食圖鑑，並享有雲端備份。
+                </p>
+                <input type="email" id="auth-email" placeholder="Email">
+                <input type="password" id="auth-password" placeholder="密碼">
+                <input type="password" id="auth-confirm-password" placeholder="確認密碼">
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-login" class="btn-primary">登入</button>
+                    <button id="btn-register" class="btn-ghost">註冊</button>
+                </div>
+            </div>
+
+            <div id="auth-logged" class="card glass" style="display: none;">
+                <h2>帳號資訊</h2>
+                <p id="logged-email" style="margin-bottom: 20px;"></p>
+                <button id="btn-sync" class="btn-primary" style="margin-bottom: 10px;">立即手動同步</button>
+                <button id="btn-logout" class="btn-ghost" style="margin-bottom: 20px;">登出帳號</button>
+                <p style="font-size: 0.6rem; color: var(--text-muted); text-align: center;">Build Version: v1.0.1+202604201236</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Install App Banner -->
+    <div id="install-banner" class="glass">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <p>📱 安裝 FoodiePin 體驗更好</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button id="btn-install-now" class="btn-primary" style="width: auto; padding: 8px 16px; font-size: 0.8rem; background: white; color: var(--primary);">立即安裝</button>
+            <span id="btn-close-banner" style="cursor: pointer; font-size: 1.5rem; color: rgba(255,255,255,0.6); padding: 5px;">&times;</span>
+        </div>
+    </div>
+
+    <!-- iOS Install Modal -->
+    <div id="ios-install-modal" class="modal-overlay">
+        <div class="modal glass animate-fade">
+            <h2>安裝到手機主畫面</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">
+                在 iOS 上我們無法自動安裝，請手動執行：
+            </p>
+            <div class="ios-step">
+                <span class="ios-icon">📤</span>
+                <div>
+                    <p><strong>第一步</strong></p>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">點擊瀏覽器下方的「分享」按鈕</p>
+                </div>
+            </div>
+            <div class="ios-step">
+                <span class="ios-icon">➕</span>
+                <div>
+                    <p><strong>第二步</strong></p>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">選擇「加入主畫面」</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('ios-install-modal').style.display='none'" class="btn-ghost">我知道了</button>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="showSection('home')">
+            <span class="nav-icon">✨</span>
+            首頁
+        </div>
+        <div class="nav-item" onclick="showSection('list')">
+            <span class="nav-icon">🔖</span>
+            清單
+        </div>
+        <div class="nav-item" onclick="showSection('profile')">
+            <span class="nav-icon">👤</span>
+            個人
+        </div>
+    </nav>
+
+    <script src="js/app.js?v=103"></script>
+</body>
+</html>

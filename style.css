@@ -1,0 +1,258 @@
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --accent: #f59e0b;
+    --bg-dark: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding-bottom: 80px; /* Space for bottom nav */
+}
+
+/* Glassmorphism Classes */
+.glass {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+}
+
+/* Layout */
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-auth-group {
+    display: flex;
+    align-items: center;
+}
+
+/* Cards & Components */
+.card {
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+h2 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: var(--text-main);
+}
+
+/* Inputs & Buttons */
+input, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+    border-top: 1px solid var(--glass-border);
+    z-index: 1000;
+}
+
+.nav-item {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* List Styling */
+.food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.food-info h3 {
+    font-size: 1rem;
+}
+
+.food-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.maps-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+}
+
+/* Install Banner */
+#install-banner {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    right: 20px;
+    padding: 12px 15px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 1001;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#install-banner p {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+#btn-close-banner:hover {
+    color: white !important;
+    transform: scale(1.1);
+}
+
+.save-status {
+    background: rgba(74, 222, 128, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* iOS Instruction Modal */
+#ios-install-modal .modal-content {
+    background: var(--bg-dark);
+    text-align: center;
+}
+
+.ios-step {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.ios-icon {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 50%;
+}
