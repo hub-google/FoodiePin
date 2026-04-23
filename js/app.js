@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // GAS_URL: 'YOUR_GAS_WEB_APP_URL_HERE'
-    GAS_URL: 'https://script.google.com/macros/s/AKfycbwVI3VRvibqEZyn--L8AXSYVGOtDHhKGogjjwxJjxNsauoNtQJ4C9IACxV1TTWT9YZR6Q/exec'
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbz-S-xpTTTNkzubkgnkSbmmwEJ8UPHlVnSvpxLTW3cOmk4PoKK1SbTEHLOGr85vg6-gJw/exec'
 };
 
 // State management
